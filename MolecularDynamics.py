@@ -63,9 +63,9 @@ class OrbD3Calculator(Calculator):
 orbff = pretrained.orb_d3_v1()
 
 # Load XYZ file into ASE Atoms object
-atoms = read(input_file)
+#atoms = read(input_file)
 
-#atoms = bulk('Cu', 'fcc', a=3.58, cubic=True)
+atoms = bulk('Cu', 'fcc', a=3.58, cubic=True)
 
 # Update cell size
 atoms.set_cell([cell_size, cell_size, cell_size])
@@ -99,4 +99,4 @@ dyn.attach(wrap_atoms, interval=1)
 dyn.attach(MDLogger(dyn, atoms, "md_nvt.log", header=True, stress=False, peratom=True), interval=10)
 
 # Run the simulation for 1,000,000 time steps
-dyn.run(1000)
+dyn.run(500)
