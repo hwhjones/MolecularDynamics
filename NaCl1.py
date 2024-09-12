@@ -2,6 +2,7 @@ import torch
 from ase.io import read
 from ase.md.velocitydistribution import MaxwellBoltzmannDistribution
 from ase.io.trajectory import Trajectory
+from ase.io import write as ase_write
 from ase.md import MDLogger
 from ase import units
 from orb_models.forcefield import atomic_system
@@ -10,14 +11,13 @@ from ase.calculators.calculator import Calculator, all_properties
 import numpy as np
 import os
 from ase.md.langevin import Langevin  # Langevin thermostat for NVT
-from ase.build import bulk
 
 # Define input file name and cell size at the top
 input_file = "nacl_water.xyz"
 cell_size = 13.92  # in Angstroms
 
-# Generate output file name
-output_file = os.path.splitext(input_file)[0] + ".traj"
+# Generate output file name (change extension to .pdb)
+output_file = os.path.splitext(input_file)[0] + ".pdb"
 
 # Define a custom Orb-d3-v1 calculator with CUDA support
 class OrbD3Calculator(Calculator):
@@ -65,8 +65,6 @@ orbff = pretrained.orb_d3_v1()
 # Load XYZ file into ASE Atoms object
 atoms = read(input_file)
 
-#atoms = bulk('Cu', 'fcc', a=3.58, cubic=True)
-
 # Update cell size
 atoms.set_cell([cell_size, cell_size, cell_size])
 atoms.set_pbc([True, True, True])  # Apply periodic boundary conditions
@@ -84,19 +82,19 @@ timestep = 0.5 * units.fs
 
 dyn = Langevin(atoms, timestep, temperature_K=temperature_K, friction=friction)
 
-# Function to wrap atoms back into the simulation box
-def wrap_atoms(atoms=atoms):
-    atoms.wrap()
+# Function to write PDB file
+def write_pdb(atoms=atoms):
+    ase_write(output_file, atoms, format='pdb', append=True)
 
-# Save the trajectory to a file
-trajectory = Trajectory(output_file, "w", atoms)
-dyn.attach(trajectory.write, interval=20)  # Save every 20 steps
+# Attach the PDB writing function instead of Trajectory
+dyn.attach(write_pdb, interval=20)  # Save every 20 steps
 
-# Attach the wrap_atoms function to be called at every step
-dyn.attach(wrap_atoms, interval=1)
+# Remove or comment out the Trajectory-related lines
+# trajectory = Trajectory(output_file, "w", atoms)
+# dyn.attach(trajectory.write, interval=20)
 
 # Optional: Add an MDLogger to print energy and forces
 dyn.attach(MDLogger(dyn, atoms, "md_nvt.log", header=True, stress=False, peratom=True), interval=10)
 
 # Run the simulation for 1,000,000 time steps
-dyn.run(500)
+dyn.run(1000000)

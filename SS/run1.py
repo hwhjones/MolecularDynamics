@@ -1,6 +1,5 @@
 import streamlit as st
 import nglview as nv
-import nglview
 from ase.io import read
 import io
 import numpy as np
@@ -13,7 +12,7 @@ traj = read('nacl_water.traj', index=':')
 st.title("Molecular Dynamics Trajectory Viewer")
 
 # Create an NGLView widget with the trajectory
-view = nv.show_asetraj(traj)
+view = nv.show_pdbid("converted.pdb")
 
 nglview.write_html("index.html", [view])
 
