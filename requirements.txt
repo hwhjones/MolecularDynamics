@@ -1,9 +1,9 @@
 ase==3.22.1
-biopython==1.84  # Consider updating to the latest version
+biopython==1.84
 MDAnalysis==2.7.0
 molviewspec==1.0.0
 nglview==3.0.8
-numpy>=1.22.3,<2.0  # This range satisfies MDAnalysis and allows for newer versions
+numpy>=1.22.3,<2.0
 orb_models==0.3
 pandas==2.2.2
 Pillow==10.4.0
@@ -12,3 +12,4 @@ py3Dmol==2.4.0
 stmol==0.0.9
 streamlit==1.38.0
 torch==2.2.0
+ipython_genutils
