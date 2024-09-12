@@ -1,1 +1,1 @@
-web: python run3.py
+web: streamlit run run3.py
