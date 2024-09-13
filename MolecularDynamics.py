@@ -88,15 +88,19 @@ dyn = Langevin(atoms, timestep, temperature_K=temperature_K, friction=friction)
 def wrap_atoms(atoms=atoms):
     atoms.wrap()
 
-# Save the trajectory to a file
-trajectory = Trajectory(output_file, "w", atoms)
-dyn.attach(trajectory.write, interval=20)  # Save every 20 steps
+# Function to write PDB file
+def write_pdb(atoms=atoms):
+    ase_write(output_file, atoms, format='pdb', append=True)
 
-# Attach the wrap_atoms function to be called at every step
-dyn.attach(wrap_atoms, interval=1)
+# Attach the PDB writing function instead of Trajectory
+dyn.attach(write_pdb, interval=1)  # Save every 20 steps
+
+# Remove or comment out the Trajectory-related lines
+# trajectory = Trajectory(output_file, "w", atoms)
+# dyn.attach(trajectory.write, interval=20)
 
 # Optional: Add an MDLogger to print energy and forces
-dyn.attach(MDLogger(dyn, atoms, "md_nvt.log", header=True, stress=False, peratom=True), interval=10)
+dyn.attach(MDLogger(dyn, atoms, "md_nvt.log", header=True, stress=False, peratom=True), interval=1)
 
 # Run the simulation for 1,000,000 time steps
-dyn.run(500)
+dyn.run(1000000)
