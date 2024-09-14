@@ -1,5 +1,6 @@
 import torch
 from ase.io import read
+from ase.io import write as ase_write
 from ase.md.velocitydistribution import MaxwellBoltzmannDistribution
 from ase.io.trajectory import Trajectory
 from ase.md import MDLogger
@@ -88,19 +89,12 @@ dyn = Langevin(atoms, timestep, temperature_K=temperature_K, friction=friction)
 def wrap_atoms(atoms=atoms):
     atoms.wrap()
 
-# Function to write PDB file
-def write_pdb(atoms=atoms):
-    ase_write(output_file, atoms, format='pdb', append=True)
-
-# Attach the PDB writing function instead of Trajectory
-dyn.attach(write_pdb, interval=1)  # Save every 20 steps
-
 # Remove or comment out the Trajectory-related lines
-# trajectory = Trajectory(output_file, "w", atoms)
-# dyn.attach(trajectory.write, interval=20)
+trajectory = Trajectory(output_file, "w", atoms)
+dyn.attach(trajectory.write, interval=1)
 
 # Optional: Add an MDLogger to print energy and forces
 dyn.attach(MDLogger(dyn, atoms, "md_nvt.log", header=True, stress=False, peratom=True), interval=1)
 
 # Run the simulation for 1,000,000 time steps
-dyn.run(1000000)
+dyn.run(100)

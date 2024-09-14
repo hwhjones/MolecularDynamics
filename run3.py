@@ -13,7 +13,10 @@ def render_mol(pdb_string, frame=0):
     frame_pdb = '\n'.join(pdb_lines[start_index:end_index])
     view = py3Dmol.view(width=800, height=400)
     view.addModel(frame_pdb, 'pdb')
-    view.setStyle({'sphere': {'color': 'orange', 'radius': 0.7}})
+    view.setStyle({'elem': 'H'}, {'sphere': {'color': 'purple', 'radius': 0.4}})
+    view.setStyle({'elem': 'O'}, {'sphere': {'color': 'red', 'radius': 0.4}})
+    view.setStyle({'elem': 'Na'}, {'sphere': {'color': 'black', 'radius': 0.5}})
+    view.setStyle({'elem': 'Cl'}, {'sphere': {'color': 'green', 'radius': 0.5}})
     view.zoomTo()
     view.setBackgroundColor('white')
     showmol(view, height=400, width=800)
@@ -22,7 +25,7 @@ def render_mol(pdb_string, frame=0):
 st.title('Copper Atoms Trajectory Viewer')
 
 # Read the PDB file
-pdb_file_path = 'converted.pdb'  # Replace with your actual file path
+pdb_file_path = 'nacl_water.pdb'  # Replace with your actual file path
 pdb_string = read_pdb(pdb_file_path)
 
 # Count the number of frames
