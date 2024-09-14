@@ -11,18 +11,28 @@ def render_mol(pdb_string, frame=0):
     start_index = pdb_lines.index(f'MODEL     {frame + 1}') + 1
     end_index = pdb_lines.index('ENDMDL', start_index)
     frame_pdb = '\n'.join(pdb_lines[start_index:end_index])
+    print(frame_pdb)
+    print(start_index)
+    print(end_index)
     view = py3Dmol.view(width=800, height=400)
-    view.addModel(frame_pdb, 'pdb')
-    view.setStyle({'elem': 'H'}, {'sphere': {'color': 'purple', 'radius': 0.4}})
-    view.setStyle({'elem': 'O'}, {'sphere': {'color': 'red', 'radius': 0.4}})
-    view.setStyle({'elem': 'Na'}, {'sphere': {'color': 'black', 'radius': 0.5}})
-    view.setStyle({'elem': 'Cl'}, {'sphere': {'color': 'green', 'radius': 0.5}})
-    view.zoomTo()
+    view.addModel(frame_pdb, 'pdb', {'keepH': True})
     view.setBackgroundColor('white')
+
+    # Set style for all atoms as spheres
+    view.setStyle({}, {'sphere': {'radius': 0.3}})
+
+    # Adjust sphere size and color for different elements
+    view.addStyle({'atom':'O'}, {'sphere': {'radius': 0.66, 'color': 'red'}})
+    view.addStyle({'atom':'H'}, {'sphere': {'radius': 0.31, 'color': 'black', 'opacity':0.8}})
+    view.addStyle({'atom':'Na'}, {'sphere': {'radius': 1.02, 'color': 'purple'}})
+    view.addStyle({'atom':'Cl'}, {'sphere': {'radius': 0.99, 'color': 'green'}})
+
+    view.zoomTo()
+
     showmol(view, height=400, width=800)
 
 # Streamlit app
-st.title('Copper Atoms Trajectory Viewer')
+st.title('NaCl Atoms Trajectory Viewer')
 
 # Read the PDB file
 pdb_file_path = 'nacl_water.pdb'  # Replace with your actual file path
